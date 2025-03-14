@@ -66,10 +66,12 @@ const images = [
     
 
     const container = document.querySelector("ul.gallery");
-     container.insertAdjacentHTML("beforeend", modalGallery(images));
+     container.insertAdjacentHTML("beforeend", galleryMarkup(images));
      
-    function modalGallery(images) {
-        return images.map((item) => `
+  
+ 
+    function galleryMarkup(arr) {
+        return arr.map((item) => `
         <li class="gallery-item">
             <a class="gallery-link" href="${item.original}">
               <img
@@ -82,8 +84,34 @@ const images = [
           </li>
         `).join("");
     }
-    console.log(modalGallery(images));
     
+
+container.addEventListener("click", function(event) {
+    event.preventDefault(); 
+
+    const clickImage = event.target.closest(".gallery-image");
+    if (!clickImage) return; 
+
+    const largeImage = clickImage.dataset.source;
+    console.log(largeImage);
+    const instance = basicLightbox.create(`
+      <div class="modal">
+      <img src="${largeImage}" width="1112" height="640">
+      </div>
+    `);
     
+    instance.show();
+    
+    document.addEventListener("keydown", function onEscape(event) {
+      if (event.key === "Escape") {
+          instance.close();
+          document.removeEventListener("keydown", onEscape); 
+      }
+    });
+        
+});
+
+
+
     
     
